@@ -1,7 +1,6 @@
 import random
 
-cards = ['A','2','3','4','5','6','7','8','9','10','J','Q','K']
-values = {
+cards = {
     'A':11,
     '2':2,
     '3':3,
@@ -28,18 +27,21 @@ def start():
     else:
         print('bye!')
 
+def random_card():
+    card, value = random.choice(list(cards.items()))
+    return [card, value]
+
 def deal_cards():
     for i in range(2):
-        user.append(random.choice(cards))
-        dealer.append(random.choice(cards))
-    
+        user.append(random_card())
+        dealer.append(random_card())
     print_score(user)
     print_score(dealer)
 
 def print_score(player):
     score = 0
-    for i in range(len(player)):
-        score += values[player[i]]
+    for i in player:
+        score += i[1]
     print(score)
 
 
