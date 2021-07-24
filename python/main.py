@@ -15,12 +15,17 @@ cards = {
     'Q':10,
     'K':10
 }
+
 user = []
 dealer = []
+
 def play_prompt():
     """Initiates new game"""
 
     play = input('Ready to play? \ny or n \n')
+
+    del user[:]
+    del dealer[:]
 
     if play == 'y':
         start_game()
@@ -33,21 +38,24 @@ def random_card():
     return [card, value]
 
 def start_game():
-    for i in range(2):
+    for _ in range(2):
         user.append(random_card())
         dealer.append(random_card())
-    
+
     game_over = False
     
     while not game_over:
         user_hand = get_hand(user)
         user_score = get_score(user)
+
         dealer_hand = get_hand(dealer)
-        dealer_hand[0] = 'X'
+        hidden_dealer_hand = get_hand(dealer)
+        hidden_dealer_hand[0] = 'X'
         dealer_score = get_score(dealer)
         
         print(f'your hand is {user_hand}')
-        print(f'the dealer is showing {dealer_hand}')
+        print(f'the dealer is not showing {dealer_hand}')
+        print(f'the dealer is showing {hidden_dealer_hand}')
 
         if user_score == 21:
             game_over = True
@@ -56,28 +64,37 @@ def start_game():
             game_over = True
             print('Dealer Wins!')
         elif user_score > 21:
-            game_over = True
-            print('Bust! You Lose!')
+            if 'A' in user_hand:
+                user_score -= 10
+            else:
+                game_over = True
+                print('Bust! You Lose!')
         elif dealer_score > 21:
             game_over = True
             print('Dealer Bust! You Win!')
-        else:
-            player_choice = input("Would you like to 'hit' or 'stand'?\n")
-            while dealer_score < 17:
-                dealer.append(random_card())
-                dealer_score = get_score(dealer)
-            if player_choice == 'hit':
-                user.append(random_card())
-            else: 
-                game_over = True
-                user_score = get_score(user)
-                if user_score > dealer_score:
-                    print(f'You have {user_score} and the dealer has {dealer_score}. You Win!')
-                elif user_score < dealer_score:
-                    print(f'You have {user_score} and the dealer has {dealer_score}. You Lose!')
-                elif user_score == dealer_score:
-                    print(f'You have {user_score} and the dealer has {dealer_score}. Draw!')
-                
+        
+        game_over = True
+
+        # else:
+        #     player_choice = input("Would you like to 'hit' or 'stand'?\n")
+        #     while dealer_score < 17:
+        #         dealer.append(random_card())
+        #         dealer_score = get_score(dealer)
+        #     if player_choice == 'hit':
+        #         user.append(random_card())
+        #     else: 
+        #         game_over = True
+        #         user_score = get_score(user)
+        #         if user_score > dealer_score:
+        #             print(f'You have {user_score} and the dealer has {dealer_score}. You Win!')
+        #             print(get_hand(dealer))
+        #         elif user_score < dealer_score:
+        #             print(f'You have {user_score} and the dealer has {dealer_score}. You Lose!')
+        #             print(get_hand(dealer))
+        #         elif user_score == dealer_score:
+        #             print(f'You have {user_score} and the dealer has {dealer_score}. Draw!')
+        #             print(get_hand(dealer))
+    play_prompt()
 
         
 def get_score(player):
@@ -96,6 +113,5 @@ play_prompt()
 
 
 # STILL NEED
-# handle aces as 1 or 11
+# fix random card generation
 # test for more edge cases
-# prompt user to play again
