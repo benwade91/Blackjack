@@ -16,9 +16,11 @@ cards = {
     'K':10
 }
 
+# USER/DEALER HANDS
 user = []
 dealer = []
 
+# PROMPTS USER TO BEGIN
 def play_prompt():
     """Initiates new game"""
 
@@ -32,11 +34,12 @@ def play_prompt():
     else:
         print('bye!')
     
-
+# RANDOMLY SELECTS CARD FROM DICTIONARY
 def random_card():
     card, value = random.choice(list(cards.items()))
     return [card, value]
 
+# GAME LOGIC
 def start_game():
     for _ in range(2):
         user.append(random_card())
@@ -54,64 +57,70 @@ def start_game():
         dealer_score = get_score(dealer)
         
         print(f'your hand is {user_hand}')
-        print(f'the dealer is not showing {dealer_hand}')
         print(f'the dealer is showing {hidden_dealer_hand}')
 
+        # LOOK FOR BLACKJACK
         if user_score == 21:
             game_over = True
-            print('You Win!')
+            print('You Win! BlackJack!')
+            print(user_hand)
         elif dealer_score == 21:
             game_over = True
-            print('Dealer Wins!')
+            print('Dealer BlackJack!')
+            print(dealer_hand)
         elif user_score > 21:
-            if 'A' in user_hand:
-                user_score -= 10
-            else:
-                game_over = True
-                print('Bust! You Lose!')
-        elif dealer_score > 21:
             game_over = True
-            print('Dealer Bust! You Win!')
-        
-        game_over = True
+            print('Bust! You Lose!')
+            print(user_hand)
 
-        # else:
-        #     player_choice = input("Would you like to 'hit' or 'stand'?\n")
-        #     while dealer_score < 17:
-        #         dealer.append(random_card())
-        #         dealer_score = get_score(dealer)
-        #     if player_choice == 'hit':
-        #         user.append(random_card())
-        #     else: 
-        #         game_over = True
-        #         user_score = get_score(user)
-        #         if user_score > dealer_score:
-        #             print(f'You have {user_score} and the dealer has {dealer_score}. You Win!')
-        #             print(get_hand(dealer))
-        #         elif user_score < dealer_score:
-        #             print(f'You have {user_score} and the dealer has {dealer_score}. You Lose!')
-        #             print(get_hand(dealer))
-        #         elif user_score == dealer_score:
-        #             print(f'You have {user_score} and the dealer has {dealer_score}. Draw!')
-        #             print(get_hand(dealer))
+        else:        
+            player_choice = input("Would you like to 'hit' or 'stand'?\n")
+            
+            if player_choice == 'hit':
+                user.append(random_card())
+            else: 
+                game_over = True
+
+                # DEALER PLAYS
+                while dealer_score < 17:
+                    dealer.append(random_card())
+                    dealer_score = get_score(dealer)
+                    dealer_hand = get_hand(dealer)
+                
+                # ASSESS SCORES
+                if dealer_score > 21:
+                    print('Dealer Bust! You Win!')
+                    print(dealer_hand)
+                elif dealer_score == 21:
+                    print('Dealer BlackJack!')
+                    print(dealer_hand)
+                elif user_score > dealer_score:
+                    print(f'You have {user_score} and the dealer has {dealer_score}. You Win!')
+                    print(get_hand(dealer))
+                elif user_score < dealer_score:
+                    print(f'You have {user_score} and the dealer has {dealer_score}. You Lose!')
+                    print(get_hand(dealer))
+                elif user_score == dealer_score:
+                    print(f'You have {user_score} and the dealer has {dealer_score}. Draw!')
+                    print(get_hand(dealer))
     play_prompt()
 
-        
+# RETURNS SCORE OF PROVIDED USER
 def get_score(player):
     score = 0
     for i in player:
         score += i[1]
+        if score > 21:
+            if i[0] == 'A':
+                score -= 10
+    
     return score
 
+# RETURNS HAND OF PROVIDED USER
 def get_hand(player):
     hand = []
-    for i in user:
+    for i in player:
            hand.append(i[0])
     return hand
 
 play_prompt()
-
-
-# STILL NEED
-# fix random card generation
-# test for more edge cases
