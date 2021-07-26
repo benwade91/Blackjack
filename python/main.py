@@ -1,5 +1,6 @@
 import random
 
+# CARD DICTIONARY
 cards = {
     'A':11,
     '2':2,
